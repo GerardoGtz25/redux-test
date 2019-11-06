@@ -3,21 +3,19 @@ import ReactDOM from 'react-dom';
 import App from './components/App';
 
 import { createStore } from 'redux'
-import { Porvider } from 'react-redux'
+import { Provider } from 'react-redux'
 
 import reducers from './reducers'
-
 
 const store =  createStore(
   reducers, // Todos los reduces
   {}  // Estado inicial
 )
 
-
 ReactDOM.render(
-  <Porvider store={ store }>
+  <Provider store={ store }>
     <App />
-  </Porvider>, 
+  </Provider>, 
   document.getElementById('root')
 );
 
