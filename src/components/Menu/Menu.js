@@ -2,7 +2,7 @@ import React from  'react'
 import { Link } from 'react-router-dom'
 
 const Menu = (props) => (
-  <nav className="navbar navbar-dark bg-dark">
+  <nav className="navbar navbar-dark bg-dark mb-5">
     <Link className="navbar-brand" to="/">
       <span className="text-white">Redux</span>
     </Link>

@@ -8,6 +8,8 @@ import reduxThunk from 'redux-thunk'
 
 import reducers from './reducers'
 
+import './css/index.css';
+
 const store =  createStore(
   reducers, // Todos los reduces
   {},  // Estado inicial
