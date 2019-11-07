@@ -1,17 +1,11 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import { connect } from 'react-redux'
 
 import * as usuariosActions from '../../actions/usuariosActions'
 
 class Usuarios extends Component {
 
-
-  async componentDidMount() {
-    // const respuesta = await axios.get('https://jsonplaceholder.typicode.com/users');
-    // this.setState({
-    //   usuarios: respuesta.data
-    // })
+  componentDidMount() {
     this.props.traerTodos();
   }
   
@@ -26,10 +20,9 @@ class Usuarios extends Component {
   );
   
   render() {
-    console.log(this.props)
     return (
       <div className="container">
-        <tabel className="table">
+        <table className="table">
           <thead>
             <tr>
               <th scope="col">Nombre</th>
@@ -40,7 +33,7 @@ class Usuarios extends Component {
           <tbody>
             { this.ponerFilas() }
           </tbody>
-        </tabel>
+        </table>
       </div>
     );
   }
