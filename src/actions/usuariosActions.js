@@ -7,13 +7,11 @@ export const traerTodos = () => async (dispatch) => {
   })
   try {
     const respuesta = await axios.get('https://jsonplaceholder.typicode.com/users');
-      
     dispatch({
       type: TRAER_TODOS,
       payload: respuesta.data
     })
   } catch (error) {
-    // console.log('Error: ' + error.message);
     dispatch({
       type: ERROR,
       payload: 'Algo salió mal intente mas tarde'

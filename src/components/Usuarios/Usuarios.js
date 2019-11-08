@@ -14,17 +14,9 @@ class Usuarios extends Component {
   }
 
   ponerContenido = () => {
-    if (this.props.error) {
-      return <Fatal mensaje={ this.props.error }/>
-    }  
-
-    if (this.props.cargando) {
-      return <Spinner/>
-    } else {
-      return (
-        <Tabla/>
-      )
-    }
+    return this.props.error ? 
+      <Fatal mensaje={ this.props.error }/>
+      : this.props.cargando ? <Spinner/> : <Tabla/>
   }
   
   render() {
