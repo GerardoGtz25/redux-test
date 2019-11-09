@@ -10,7 +10,9 @@ import * as usuariosActions from '../../actions/usuariosActions'
 class Usuarios extends Component {
 
   componentDidMount() {
-    this.props.traerTodos();
+    if(!this.props.usuarios.length) {
+      this.props.traerTodos();
+    }
   }
 
   ponerContenido = () => {
@@ -20,6 +22,7 @@ class Usuarios extends Component {
   }
   
   render() {
+    console.log(this.props)
     return (
       <div className="container">
         <div className="row">
