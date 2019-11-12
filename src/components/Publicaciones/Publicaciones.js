@@ -10,10 +10,9 @@ import * as publicacionesActions from './../../actions/publicacionesActions'
 const { traerTodos: usuariosTraerTodos } = usuariosActions
 const { 
   traerPorUsuario: publicacionesTraerPorUsuario,
-   abriCerrar,
-   publicacionesActions,
-   traerComentarios
-  } = publicacionesActions
+  abriCerrar,
+  traerComentarios
+} = publicacionesActions
 
 class Publicaciones extends Component {
   
@@ -85,8 +84,6 @@ class Publicaciones extends Component {
 
     const { publicaciones_key } = usuarios[key];
 
-    console.log(publicaciones, publicaciones_key)
-
     return this.mostrarInfo(
       publicaciones[publicaciones_key],
       publicaciones_key
@@ -103,21 +100,26 @@ class Publicaciones extends Component {
           <h3>{ publicacion.title }</h3>
           <p>{ publicacion.body }</p>
         </div>
-        <div 
-          className={ (publicacion.abierto) ? 'comentarios col-12 mostrar'  : 'comentarios col-12 ocultar'  }>
-          <Comentarios/>
-        </div>
+        {
+					(publicacion.abierto) ?
+						<Comentarios
+							comentarios={ publicacion.comentarios }
+						/>
+						: ''
+				}
       </div>
     ))
   )
 
   mostrarComentarios = (pub_key, com_key, comentarios) => {
     this.props.abriCerrar(pub_key, com_key)
-    this.props.traerComentarios(pub_key, com_key)
+    if (!comentarios.length) {
+      this.props.traerComentarios(pub_key, com_key)
+    }
   }
 
   render() {
-    console.log(this.props)
+    // console.log(this.props)
     return (
       <div>
         { this.ponerUsuarios() }

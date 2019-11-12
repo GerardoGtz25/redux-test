@@ -1,5 +1,11 @@
 import axios from 'axios'
-import { ACTUALIZAR, CARGANDO, ERROR } from '../types/publicacionesTypes'
+import { 
+  ACTUALIZAR,
+  CARGANDO,
+  ERROR,
+  COM_ACTUALIZAR,
+  COM_ERROR,
+  COM_CARGANDO } from '../types/publicacionesTypes'
 import * as usuariosTypes from '../types/usuariosTypes'
 
 const { TRAER_TODOS: USUARIOS_TRAER_TODOS } = usuariosTypes;
@@ -24,7 +30,7 @@ export const traerPorUsuario = (key) => async (dispatch, getState) => {
 
     const publicaciones_actualizadas = [
       ...publicaciones,
-      respuesta.data
+      nuevas
     ]
 
     dispatch({
@@ -74,10 +80,35 @@ export const abriCerrar = (pub_key, com_key) => (dispatch, getState) => {
 }
 
 export const traerComentarios = (pub_key, com_key) => async (dispatch, getState) => {
+  dispatch({
+    type: COM_CARGANDO
+  })
   const { publicaciones } = getState().publicacionesReducer;
   const seleccionada = publicaciones[pub_key][com_key]
 
-  const respuesta = await axios.get('https://jsonplaceholder.typicode.com/comments?postId=${usuario_id}')
+  try {
+    const respuesta = await axios.get(`https://jsonplaceholder.typicode.com/comments?postId=${seleccionada.id}`)
 
+    const actualizada = {
+      ...seleccionada,
+      comentarios: respuesta.data
+    }
 
+    const publicaciones_actualizadas = [...publicaciones]
+    publicaciones_actualizadas[pub_key] = [ 
+      ...publicaciones[pub_key]
+    ]
+    publicaciones_actualizadas[pub_key][com_key] = actualizada
+
+    dispatch({
+      type: COM_ACTUALIZAR,
+      payload: publicaciones_actualizadas
+    })
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: COM_ERROR,
+      payload: 'Comentarios no disponibles'
+    })
+  }
 }
