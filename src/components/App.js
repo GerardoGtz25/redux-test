@@ -5,6 +5,7 @@ import Menu from './Menu/Menu'
 import Usuarios from './Usuarios/Usuarios'
 import Tareas from './Tareas/Tareas'
 import Publicaciones from './Publicaciones/Publicaciones'
+import TareasGuardar from './Tareas/Guardar'
 
 const App = () => (
   <BrowserRouter>
@@ -13,6 +14,7 @@ const App = () => (
       <Route exact path="/" component={ Usuarios }/>
       <Route exact path="/tareas" component={ Tareas }/>
       <Route exact path="/publicaciones/:key" component={ Publicaciones } />
+      <Route exact path="/tareas/guardar" component={ TareasGuardar } />
     </div>
   </BrowserRouter>
 );
