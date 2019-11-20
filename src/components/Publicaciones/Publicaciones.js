@@ -1,13 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Spinner from './../General/Spinner'
-import Fatal from './../General/Fatal'
+import Spinner from '../General/Spinner'
+import Fatal from '../General/Fatal'
+import Comentarios from './Comentarios'
 
 import * as usuariosActions from '../../actions/usuariosActions'
 import * as publicacionesActions from './../../actions/publicacionesActions'
 
 const { traerTodos: usuariosTraerTodos } = usuariosActions
-const { traerPorUsuario: publicacionesTraerPorUsuario } = publicacionesActions
+const { 
+  traerPorUsuario: publicacionesTraerPorUsuario,
+  abriCerrar,
+  traerComentarios
+} = publicacionesActions
 
 class Publicaciones extends Component {
   
@@ -22,43 +27,95 @@ class Publicaciones extends Component {
       await usuariosTraerTodos()
     }
 
-    if (!this.props.usuariosReducer.error) {
-      return null;
+    if (this.props.usuariosReducer.error) {
+      return 
     }
 
     if(!('publicaciones_key' in this.props.usuariosReducer.usuarios[key])) {
-      publicacionesTraerPorUsuario(this.props.match.params.key)
+      await publicacionesTraerPorUsuario(this.props.match.params.key)
     }
   }
 
-  renderPublicaciones() {
+  ponerUsuarios = () => {
     const { 
       usuariosReducer,
-      publicacionesReducer,
       match: { params: { key } }
     } = this.props
 
     if (usuariosReducer.error) {
-      return <Fatal mensaje={usuariosReducer.error} />
+      return <Fatal mensaje={ usuariosReducer.error } />
     }
 
-    if (usuariosReducer.cargando) {
+    if (usuariosReducer.cargando || !usuariosReducer.usuarios.length) {
       return <Spinner />
     }
-    
-    return publicacionesReducer.publicaciones.map(publicacion => {
-      return (
-        <div className="row" key={ publicacion.id }>
-          <div className="col-1">
-           { publicacion.id }
-          </div>
-          <div className="col-11">
-            { publicacion.title }
-          </div>
-        </div>
-      )
-    })
 
+    const nombre = usuariosReducer.usuarios[key].name;
+
+    return (
+      <h1>Publicaciones del { nombre }</h1>
+    )
+  }
+
+  ponerPublicaciones = () => {
+    const { 
+      usuariosReducer,
+      usuariosReducer: { usuarios },
+      publicacionesReducer,
+      publicacionesReducer: { publicaciones },
+      match: { params: { key } }
+    } = this.props
+
+    if (!usuarios.length) return
+    
+    if (usuariosReducer.error) return
+
+    if (publicacionesReducer.cargando) {
+      return <Spinner />
+    }
+
+    if (publicacionesReducer.error) {
+      return <Fatal mensaje={publicacionesReducer.error} />
+    }
+
+    if (!publicaciones.length) return;
+
+    if(!('publicaciones_key' in usuarios[key])) return; 
+
+    const { publicaciones_key } = usuarios[key];
+
+    return this.mostrarInfo(
+      publicaciones[publicaciones_key],
+      publicaciones_key
+    )
+  }
+
+  mostrarInfo = (publicaciones, pub_key) => (
+    publicaciones.map((publicacion, com_key) => (
+      <div 
+        className="row"
+        key={ publicacion.id }
+        onClick={ () => this.mostrarComentarios(pub_key, com_key, publicacion.comentarios) }>
+        <div className="col-12 border border-info mt-1 contenedor-comentarios">
+          <h3>{ publicacion.title }</h3>
+          <p>{ publicacion.body }</p>
+        </div>
+        {
+					(publicacion.abierto) ?
+						<Comentarios
+							comentarios={ publicacion.comentarios }
+						/>
+						: ''
+				}
+      </div>
+    ))
+  )
+
+  mostrarComentarios = (pub_key, com_key, comentarios) => {
+    this.props.abriCerrar(pub_key, com_key)
+    if (!comentarios.length) {
+      this.props.traerComentarios(pub_key, com_key)
+    }
   }
 
   // ponerUsuario =  () => {
@@ -70,13 +127,11 @@ class Publicaciones extends Component {
   // }
 
   render() {
-    console.log(this.props)
+    // console.log(this.props)
     return (
       <div>
-        <div className="col-12">
-          <h1>Publicaciones de { this.props.match.params.key }</h1>
-        </div>
-        { this.renderPublicaciones() }
+        { this.ponerUsuarios() }
+        { this.ponerPublicaciones() }
       </div>
     )
   }
@@ -91,7 +146,9 @@ const mapStateToProps = ({ usuariosReducer, publicacionesReducer }) => {
 
 const mapDispatchToProps = {
   usuariosTraerTodos,
-  publicacionesTraerPorUsuario
+  publicacionesTraerPorUsuario,
+  abriCerrar,
+  traerComentarios
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Publicaciones)
