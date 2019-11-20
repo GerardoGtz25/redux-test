@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Spinner from './../General/Spinner'
+import Fatal from './../General/Fatal'
 
 import * as usuariosActions from '../../actions/usuariosActions'
 import * as publicacionesActions from './../../actions/publicacionesActions'
@@ -20,13 +22,31 @@ class Publicaciones extends Component {
       await usuariosTraerTodos()
     }
 
+    if (!this.props.usuariosReducer.error) {
+      return null;
+    }
+
     if(!('publicaciones_key' in this.props.usuariosReducer.usuarios[key])) {
       publicacionesTraerPorUsuario(this.props.match.params.key)
     }
   }
 
   renderPublicaciones() {
-    return this.props.publicacionesReducer.publicaciones.map(publicacion => {
+    const { 
+      usuariosReducer,
+      publicacionesReducer,
+      match: { params: { key } }
+    } = this.props
+
+    if (usuariosReducer.error) {
+      return <Fatal mensaje={usuariosReducer.error} />
+    }
+
+    if (usuariosReducer.cargando) {
+      return <Spinner />
+    }
+    
+    return publicacionesReducer.publicaciones.map(publicacion => {
       return (
         <div className="row" key={ publicacion.id }>
           <div className="col-1">
@@ -38,7 +58,16 @@ class Publicaciones extends Component {
         </div>
       )
     })
+
   }
+
+  // ponerUsuario =  () => {
+    
+
+  //   if (usuariosReducer.cargando) {
+  //     return <Spinner/>
+  //   }
+  // }
 
   render() {
     console.log(this.props)
