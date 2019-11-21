@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Spinner from '../General/Spinner'
+import Fatal from '../General/Fatal'
 
 import * as tareasActions from './../../actions/tareasActions'
 
@@ -25,6 +27,32 @@ class Guardar extends Component {
     agregar(nueva_tarea)
   }
 
+  deshabilitar = () => {
+    const  { usuario_id, titulo, cargando } = this.props;
+
+    if (cargando) {
+      return true;
+    }
+
+    if (!usuario_id || !titulo) {
+      return true
+    }
+
+    return false;
+  }
+
+  mostratAccion = () => {
+    const { error, cargando } = this.props;
+
+    if (cargando) {
+      return <Spinner />
+    }
+
+    if (error) {
+      return <Fatal mensaje={error} />
+    }
+  }
+
   render() {
     return (
       <div>
@@ -45,9 +73,11 @@ class Guardar extends Component {
         <br/><br/>
         <button 
           onClick={ this.guardar }
+          disabled={ this.deshabilitar() }
         >
           Guardar
         </button>
+        { this.mostratAccion() }
       </div>
     )
   }

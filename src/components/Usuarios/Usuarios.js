@@ -9,12 +9,6 @@ import * as usuariosActions from '../../actions/usuariosActions'
 
 class Usuarios extends Component {
 
-  componentDidMount() {
-    if(!this.props.usuarios.length) {
-      this.props.traerTodos();
-    }
-  }
-
   ponerContenido = () => {
     return this.props.error ? 
       <Fatal mensaje={ this.props.error }/>
